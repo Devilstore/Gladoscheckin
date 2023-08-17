@@ -1,0 +1,34 @@
+name: Auto Check
+
+on:
+  watch:
+    types: started
+  push:
+  schedule:
+    - cron: '10 1,13 * * *'
+
+jobs:
+  build:
+    name: Glados checkin
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8]
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+    - name: running
+      run: |
+        python checkin.py
+      env:
+        COOKIES: ${{ secrets.COOKIES }}
+        PUSHPLUS: ${{ secrets.PUSHPLUS }}
