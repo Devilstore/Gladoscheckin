@@ -49,7 +49,7 @@ if __name__ == '__main__':
             # 获取账号email
             email = result['data']['email']
 
-            if status == "Checkin! Get 1 Day":
+            if "Checkin! Get" in status:
                 success += 1
                 message_status = "签到成功，会员天数 + 1"
             elif status == "Checkin Repeats! Please Try Tomorrow":
@@ -68,7 +68,8 @@ if __name__ == '__main__':
             message_days = "获取信息失败"
 
         # 推送内容
-        sendContent += f"{'-'*30}\n\
+        sendContent += f"{status}\n\
+            {'-'*30}\n\
             账号: {email}\n\
             签到情况: {message_status}\n\
             status字段: {status}\n\
