@@ -9,7 +9,7 @@ if __name__ == '__main__':
     sckey = os.environ.get("PUSHPLUS", "")
 
     # 推送内容
-    title = "Glados"
+    title = ""
     success, fail, repeats = 0, 0, 0        # 成功账号数量 失败账号数量 重复签到账号数量
     sendContent = ""
 
@@ -82,7 +82,7 @@ if __name__ == '__main__':
      # --------------------------------------------------------------------------------------------------------#
     print("sendContent:" + "\n", sendContent)
     if sckey != "":
-        title += f': 成功{success},失败{fail},重复{repeats}'
+        title += f'成功{success},失败{fail},重复{repeats}'
         plusurl = f"http://www.pushplus.plus/send?token={sckey}&title={title}&content={sendContent}"
         r = requests.get(plusurl)
         print(r.status_code)
