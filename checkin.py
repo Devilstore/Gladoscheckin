@@ -41,6 +41,7 @@ if __name__ == '__main__':
             result = checkin.json()     
             # 获取签到结果
             status = result.get('message')
+            points = result.get('points')
 
             # 获取账号当前状态
             result = state.json()
@@ -49,9 +50,9 @@ if __name__ == '__main__':
             # 获取账号email
             email = result['data']['email']
 
-            if status == "Checkin! Get 1 Day":
+            if "Checkin!" in status:
                 success += 1
-                message_status = "签到成功，会员天数 + 1"
+                message_status = "签到成功,获得"+ points +"点数"
             elif status == "Checkin Repeats! Please Try Tomorrow":
                 message_status = "今日已签到"
             else:
