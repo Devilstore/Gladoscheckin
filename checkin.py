@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
             if "Checkin!" in status:
                 success += 1
-                message_status = "签到成功,获得"+ points +"点数"
+                message_status = "签到成功,获得"+ str(points) +"点数"
             elif status == "Checkin Repeats! Please Try Tomorrow":
                 message_status = "今日已签到"
             else:
