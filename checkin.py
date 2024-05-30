@@ -38,11 +38,13 @@ if __name__ == '__main__':
     # --------------------------------------------------------------------------------------------------------#
         if checkin.status_code == 200:
             # 解析返回的json数据
-            result = checkin.json()     
+            result = checkin.json()
             # 获取签到结果
             status = result.get('message')
             points = result.get('points')
-
+            list1 = result.get('list')
+            # 查找第一个名为balance的值并保留小数点前的部分
+            balance = next((item['balance'].split('.')[0] for item in list1 if 'balance' in item), None)
             # 获取账号当前状态
             result = state.json()
             # 获取剩余时间
@@ -52,9 +54,9 @@ if __name__ == '__main__':
 
             if "Checkin!" in status:
                 success += 1
-                message_status = "签到成功,获得"+ str(points) +"点数"
+                message_status = f"签到成功,获得 {points} 点数，剩余{balance}点数 "
             elif status == "Checkin Repeats! Please Try Tomorrow":
-                message_status = "今日已签到"
+                message_status = f"今日已签到，剩余{balance}点数"
             else:
                 fail += 1
                 message_status = "签到失败，请检查..."
@@ -84,3 +86,5 @@ if __name__ == '__main__':
         plusurl = f"http://www.pushplus.plus/send?token={sckey}&title={title}&content={sendContent}"
         r = requests.get(plusurl)
         print(r.status_code)
+
+
