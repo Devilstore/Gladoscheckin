@@ -1,10 +1,12 @@
 # Glados自动签到
 
+#已根据GLaDOS返回信息修改本程序
+
 ## 食用方式：
 
 ### 注册一个GLaDOS的账号([注册地址](https://glados.space/landing/0A58E-NV28S-6U3QV-33VMG))
 
-#### 我的邀请码：0A58E-NV28S-6U3QV-33VMG
+#### 我的邀请码：3YQEV-03U06-QYY7U-5G8I6
 
 ### **Fork**本仓库
 
