@@ -9,8 +9,8 @@ if __name__ == '__main__':
     sckey = os.environ.get("PUSHPLUS", "")
 
     # 推送内容
-    title = "Glados"
-    success, fail = 0, 0        # 成功账号数量 失败账号数量
+    title = ""
+    success, fail, repeats = 0, 0, 0        # 成功账号数量 失败账号数量 重复签到账号数量
     sendContent = ""
 
     # glados账号cookie 直接使用数组 如果使用环境变量需要字符串分割一下
@@ -48,6 +48,7 @@ if __name__ == '__main__':
             leftdays = int(float(result['data']['leftDays']))
             # 获取账号email
             email = result['data']['email']
+            
             print(status)
             if "Checkin!" in status:
                 success += 1
@@ -68,9 +69,11 @@ if __name__ == '__main__':
             message_days = "获取信息失败"
 
         # 推送内容
-        sendContent += f"{'-'*30}\n\
+        sendContent += f"{status}\n\
+            {'-'*30}\n\
             账号: {email}\n\
             签到情况: {message_status}\n\
+            status字段: {status}\n\
             剩余天数: {message_days}\n"
         
         if cookie == cookies[-1]:
@@ -79,7 +82,7 @@ if __name__ == '__main__':
      # --------------------------------------------------------------------------------------------------------#
     print("sendContent:" + "\n", sendContent)
     if sckey != "":
-        title += f': 成功{success},失败{fail}'
+        title += f'成功{success},失败{fail},重复{repeats}'
         plusurl = f"http://www.pushplus.plus/send?token={sckey}&title={title}&content={sendContent}"
         r = requests.get(plusurl)
         print(r.status_code)
