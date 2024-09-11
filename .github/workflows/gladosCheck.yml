@@ -32,7 +32,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install requests
-    - name: running checnIn
+    - name: running checkin
       run: |
         python checkin.py
       env:

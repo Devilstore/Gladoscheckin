@@ -48,12 +48,12 @@ if __name__ == '__main__':
             leftdays = int(float(result['data']['leftDays']))
             # 获取账号email
             email = result['data']['email']
-
-            if "Checkin! Got" in status:
+            
+            print(status)
+            if "Checkin!" in status:
                 success += 1
                 message_status = "签到成功，会员天数 + 1"
             elif status == "Checkin Repeats! Please Try Tomorrow":
-                repeats += 1
                 message_status = "今日已签到"
             else:
                 fail += 1
