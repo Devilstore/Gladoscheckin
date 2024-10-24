@@ -71,7 +71,7 @@ if __name__ == '__main__':
                 message_days = "获取账号状态失败..."
 
         # 推送内容 
-        title = f'# 成功{success},失败{fail},重复{repeats}'
+        title = f'# Glados, 成功{success},失败{fail},重复{repeats}'
         markdown_context = f'''
                             **账号**: {email}<br>
                             **签到情况**: {message_status}<br>
