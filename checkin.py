@@ -71,14 +71,10 @@ if __name__ == '__main__':
                 message_days = "获取账号状态失败..."
 
         # 推送内容 
-        title = f'# Glados, 成功{success},失败{fail},重复{repeats}'
-        markdown_context = f'''
-                            **账号**: {email}<br>
-                            **签到情况**: {message_status}<br>
-                            **status字段**: {check_result}<br>
-                            **剩余天数**: {message_days}<br>
-                            '''
+        title = f'Glados, 成功{success},失败{fail},重复{repeats}'
+        markdown_context = "账号: " + email + ", 剩余: " + message_days
         print("Send Content:" + "\n", markdown_context)
+        
     else:
         # 推送内容 
         title = f'# 未找到 cookies!'
