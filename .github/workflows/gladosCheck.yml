@@ -28,15 +28,19 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    # 安装 python 库
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install requests
         pip install pypushdeer
+
+    # 执行 签到脚本
     - name: running checkin
       run: |
         python checkin.py
       env:
+        # env获取
         SENDKEY: ${{ secrets.SENDKEY }}
         COOKIES: ${{ secrets.COOKIES }}
 
