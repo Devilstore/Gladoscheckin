@@ -14,7 +14,7 @@ if __name__ == '__main__':
     # 推送内容
     title = ""
     success, fail, repeats = 0, 0, 0        # 成功账号数量 失败账号数量 重复签到账号数量
-    markdown_context = ""
+    context = ""
 
     # glados账号cookie 直接使用数组 如果使用环境变量需要字符串分割一下
     cookies = os.environ.get("COOKIES", []).split("&")
@@ -36,6 +36,11 @@ if __name__ == '__main__':
             state = requests.get(status_url, headers={
                                 'cookie': cookie, 'referer': referer, 'origin': origin, 'user-agent': useragent})
 
+            message_status = ""
+            points = 0
+            message_days = ""
+            
+            
             if checkin.status_code == 200:
                 # 解析返回的json数据
                 result = checkin.json()     
@@ -53,7 +58,7 @@ if __name__ == '__main__':
                 print(check_result)
                 if "Checkin! Got" in check_result:
                     success += 1
-                    message_status = "签到成功，会员点数 + " + points
+                    message_status = "签到成功，会员点数 + " + str(points)
                 elif "Checkin Repeats!" in check_result:
                     repeats += 1
                     message_status = "重复签到，明天再来"
@@ -64,16 +69,17 @@ if __name__ == '__main__':
                 if leftdays is not None:
                     message_days = f"{leftdays} 天"
                 else:
-                    message_days = "无法获取剩余天数信息"
+                    message_days = "error"
             else:
                 email = ""
                 message_status = "签到请求URL失败, 请检查..."
-                message_days = "获取账号状态失败..."
+                message_days = "error"
+
+            context += "账号: " + email + ", P: " + str(points) +", 剩余: " + message_days + " | "
 
         # 推送内容 
         title = f'Glados, 成功{success},失败{fail},重复{repeats}'
-        markdown_context = "账号: " + email + ", 剩余: " + message_days
-        print("Send Content:" + "\n", markdown_context)
+        print("Send Content:" + "\n", context)
         
     else:
         # 推送内容 
@@ -81,4 +87,4 @@ if __name__ == '__main__':
 
     # 推送消息
     pushdeer = PushDeer(pushkey=sckey) 
-    pushdeer.send_markdown(title, desp=markdown_context)
+    pushdeer.send_text(title, desp=context)
