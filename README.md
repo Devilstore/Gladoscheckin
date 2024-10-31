@@ -1,6 +1,6 @@
 # Glados自动签到
 
-## 食用方式：
+## 使用方式：
 
 ### 注册一个GLaDOS的账号([注册地址](https://glados.space/landing/M8543-E4N37-Z0JZY-BHTS0)
 
