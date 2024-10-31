@@ -2,9 +2,9 @@
 
 ## 食用方式：
 
-### 注册一个GLaDOS的账号([注册地址](https://glados.space/landing/0A58E-NV28S-6U3QV-33VMG))
+### 注册一个GLaDOS的账号([注册地址](https://glados.space/landing/M8543-E4N37-Z0JZY-BHTS0)
 
-#### 我的邀请码：([0A58E-NV28S-6U3QV-33VMG](https://0a58e-nv28s-6u3qv-33vmg.glados.space)) 
+#### 我的邀请码：([M8543-E4N37-Z0JZY-BHTS0](https://glados.space/landing/M8543-E4N37-Z0JZY-BHTS0)) 
 
 ### **Fork**本仓库
 
