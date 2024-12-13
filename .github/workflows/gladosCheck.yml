@@ -8,7 +8,7 @@ on:
       - 'README.md'
       - 'imgs/'
   schedule:
-    - cron: '0  0,12 * * *'
+    - cron: '0 4,10 * * *'
   watch:
     types: started
 
@@ -28,15 +28,20 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
+    # 安装 python 库
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install requests
-    - name: running checnIn
+        pip install pypushdeer
+
+    # 执行 签到脚本
+    - name: running checkin
       run: |
         python checkin.py
       env:
-        PUSHPLUS: ${{ secrets.PUSHPLUS }}
+        # env获取
+        SENDKEY: ${{ secrets.SENDKEY }}
         COOKIES: ${{ secrets.COOKIES }}
 
     - name: keep alive
