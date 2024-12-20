@@ -87,6 +87,6 @@ if __name__ == '__main__':
 
     # 推送消息
     # 未设置 sckey 则不进行推送
-    if sckey:
+    if sckey and len(sckey.strip()) > 0:
         pushdeer = PushDeer(pushkey=sckey) 
         pushdeer.send_text(title, desp=context)
