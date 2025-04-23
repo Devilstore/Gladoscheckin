@@ -45,7 +45,7 @@ jobs:
         COOKIES: ${{ secrets.COOKIES }}
 
     - name: keep alive
-      uses: efrecon/gh-action-keepalive@main # using the workflow with default settings
+      uses: liskin/gh-workflow-keepalive@v1 # using the workflow with default settings
       
     - name: delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
