@@ -1,4 +1,4 @@
-name: Auto Check
+name: auto check
 
 on:
   workflow_dispatch:
@@ -14,22 +14,22 @@ on:
 
 jobs:
   build:
-    name: Glados checkin
+    name: glados checkin
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: [3.8]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
-    - name: Set up Python ${{ matrix.python-version }}
+    - name: set up python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
 
     # 安装 python 库
-    - name: Install dependencies
+    - name: install dependencies
       run: |
         python -m pip install --upgrade pip
         pip install requests
@@ -45,12 +45,14 @@ jobs:
         COOKIES: ${{ secrets.COOKIES }}
 
     - name: keep alive
-      uses: gautamkrishnar/keepalive-workflow@v1 # using the workflow with default settings
-    - name: Delete workflow runs
+      uses: liskin/gh-workflow-keepalive@v1 # using the workflow with default settings
+      
+    - name: delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
       with:
         token: ${{ github.token }}
         repository: ${{ github.repository }}
-        retain_days: 0
+        retain_days: 7
         keep_minimum_runs: 10
         delete_run_by_conclusion_pattern: success
+ 
