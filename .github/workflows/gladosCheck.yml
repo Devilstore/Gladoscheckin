@@ -21,7 +21,7 @@ jobs:
         python-version: [3.8]
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -45,7 +45,7 @@ jobs:
         COOKIES: ${{ secrets.COOKIES }}
 
     - name: keep alive
-      uses: gautamkrishnar/keepalive-workflow@v1 # using the workflow with default settings
+      uses: liskin/gh-workflow-keepalive@v1 # using the workflow with default settings
     - name: Delete workflow runs
       uses: Mattraks/delete-workflow-runs@v2
       with:
