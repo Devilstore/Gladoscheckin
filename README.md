@@ -32,7 +32,7 @@
 
 3. 手机推送（非必须）
 
-- 添加1个`repository secret`，命名为`SENDKEY`，其值对应 PushDeer key: [获取地址]([http://www.pushplus.plus](https://www.pushdeer.com/product.html))。
+- 添加1个`repository secret`，命名为`SENDKEY`，其值对应 PushDeer key: ([获取地址](https://www.pushdeer.com/product.html))。
 
 ### **star**自己的仓库
 
