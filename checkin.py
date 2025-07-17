@@ -85,6 +85,13 @@ if __name__ == '__main__':
         # 推送内容 
         title = f'# 未找到 cookies!'
 
+    print("sckey:", sckey)
+    print("cookies:", cookies)
+    
     # 推送消息
-    pushdeer = PushDeer(pushkey=sckey) 
-    pushdeer.send_text(title, desp=context)
+    # 未设置 sckey 则不进行推送
+    if not sckey:
+        print("Not push")
+    else:
+        pushdeer = PushDeer(pushkey=sckey) 
+        pushdeer.send_text(title, desp=context)
