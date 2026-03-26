@@ -41,8 +41,9 @@ jobs:
         python checkin.py
       env:
         # env获取
-        SENDKEY: ${{ secrets.SENDKEY }}
-        COOKIES: ${{ secrets.COOKIES }}
+        PUSHDEER_SENDKEY: ${{ secrets.PUSHDEER_SENDKEY }}
+        GLADOS_COOKIES: ${{ secrets.GLADOS_COOKIES }}
+        GLADOS_EXCHANGE_PLAN: ${{ secrets.GLADOS_EXCHANGE_PLAN }}
 
     - name: keep alive
       uses: liskin/gh-workflow-keepalive@v1 # using the workflow with default settings
