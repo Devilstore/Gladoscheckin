@@ -1,5 +1,11 @@
 # RAILGUN自动签到
 
+##
+
+Glados迁移至railgun.info 以前的积分失效清零 也无法再登录glados了提示转到railgun登录
+网站发送的邮件历史会员礼品码可能也会失效
+<img width="1085" height="395" alt="image" src="https://github.com/user-attachments/assets/4df6712b-525f-4931-b302-25b80cf940fa" />
+
 ## 食用方式：
 
 ### 注册一个railgun的账号([注册地址](https://railgun.info/console/checkin))
@@ -31,7 +37,7 @@
 
 3. 配置积分兑换策略（非必须）
 
-- 添加1个`repository secret`，命名为`RAILGUN_EXCHANGE_PLAN`，配置自动兑换积分策略：
+- 添加1个`repository secret`，命名为`EXCHANGE_PLAN`，配置自动兑换积分策略：
 
 | 值 | 积分要求 | 兑换天数 |
 |---|---------|---------|
@@ -56,7 +62,7 @@
 │
 ├─.github
 │  └─workflows
-│          gladosCheck.yml	# Actions 配置文件
+│          railgunCheck.yml	# Actions 配置文件
 ```
 
 ## 更新日志
