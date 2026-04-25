@@ -14,17 +14,16 @@ on:
 
 jobs:
   build:
-    name: glados checkin
+    name: glados/railgun checkin
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: [3.13]
 
     steps:
-    - uses: actions/checkout@v4
-
+    - uses: actions/checkout@v6
     - name: set up python ${{ matrix.python-version }}
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6
       with:
         python-version: ${{ matrix.python-version }}
 
