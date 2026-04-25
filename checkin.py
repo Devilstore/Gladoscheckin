@@ -10,7 +10,7 @@ from logging_config import init_logger
 
 
 class CheckinStatus(Enum):
-    """签到状态枚举"""
+    """签到状态"""
 
     SUCCESS = 0
     REPEAT = 1
@@ -18,7 +18,7 @@ class CheckinStatus(Enum):
 
 
 class ExchangePlan(Enum):
-    """兑换计划枚举"""
+    """兑换计划"""
 
     PLAN100 = "plan100"
     PLAN200 = "plan200"
@@ -26,7 +26,7 @@ class ExchangePlan(Enum):
 
 
 class APIEndpoint(Enum):
-    """API端点枚举"""
+    """API端点"""
 
     CHECKIN = "/api/user/checkin"
     STATUS = "/api/user/status"
@@ -73,7 +73,7 @@ def log_method(func):
             logger.error(
                 f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.ERROR} {method_name} 执行失败: {e}"
             )
-            # 对于不同的方法，返回不同的默认值
+
             if method_name == "checkin":
                 return {
                     "status": "签到失败",
@@ -81,9 +81,9 @@ def log_method(func):
                     "message": f"执行失败: {e}",
                 }
             elif method_name == "get_status":
-                return "获取失败"
+                return "None 天"
             elif method_name == "get_points":
-                return "获取失败", 0
+                return "None 积分", 0
             elif method_name == "exchange":
                 return f"兑换失败: {e}"
             else:
@@ -93,14 +93,18 @@ def log_method(func):
 
 
 class Config:
-    """应用配置管理"""
+    """应用配置"""
 
     ENV_PUSH_KEY = "PUSHDEER_SENDKEY"
     ENV_COOKIES = "GLADOS_COOKIES"
     ENV_EXCHANGE_PLAN = "GLADOS_EXCHANGE_PLAN"
+    ENV_VERBOSE = "GLADOS_VERBOSE"
 
     """默认兑换计划"""
     DEFAULT_EXCHANGE_PLAN = "plan500"
+
+    """默认是否输出详细响应"""
+    DEFAULT_VERBOSE = False
 
     """默认域名"""
     DOMAINS = ["glados.cloud", "railgun.info"]
@@ -116,6 +120,7 @@ class Config:
         self.push_key: str = ""
         self.cookies_list: List[str] = []
         self.exchange_plan: str = self.DEFAULT_EXCHANGE_PLAN
+        self.verbose: bool = self.DEFAULT_VERBOSE
         self._load_config()
 
     def _load_config(self) -> None:
@@ -123,6 +128,7 @@ class Config:
         push_key_env: Optional[str] = os.environ.get(self.ENV_PUSH_KEY)
         raw_cookies_env: Optional[str] = os.environ.get(self.ENV_COOKIES)
         exchange_plan_env: Optional[str] = os.environ.get(self.ENV_EXCHANGE_PLAN)
+        verbose_env: Optional[str] = os.environ.get(self.ENV_VERBOSE)
 
         if not push_key_env:
             logger.warning(
@@ -173,6 +179,19 @@ class Config:
             f"{LogEmoji.INFO} 当前 {self.ENV_EXCHANGE_PLAN}: {self.exchange_plan}。"
         )
 
+        if verbose_env is not None:
+            verbose_env_lower = verbose_env.lower()
+            if verbose_env_lower in ["true", "1", "yes", "y"]:
+                self.verbose = True
+            elif verbose_env_lower in ["false", "0", "no", "n"]:
+                self.verbose = False
+            else:
+                logger.warning(
+                    f"{LogEmoji.WARNING} 环境变量 '{self.ENV_VERBOSE}' 的值 '{verbose_env}' 无效，将使用默认值 {self.DEFAULT_VERBOSE}。"
+                )
+
+        logger.info(f"{LogEmoji.INFO} 当前 {self.ENV_VERBOSE}: {self.verbose}。")
+
 
 class API:
     """API 调用"""
@@ -182,15 +201,16 @@ class API:
     POINTS_URL = APIEndpoint.POINTS.value
     EXCHANGE_URL = APIEndpoint.EXCHANGE.value
 
-    def __init__(self, domain: str, cookie_index: int = 0):
+    def __init__(self, domain: str, cookie_index: int = 0, verbose: bool = False):
         self.domain: str = domain
         self.cookie_index: int = cookie_index
+        self.verbose: bool = verbose
         self.headers: Dict[str, str] = self._get_headers()
         self.session = requests.Session()
         self.session.headers.update(self.headers)
 
     def __del__(self):
-        """析构方法，关闭 session"""
+        """关闭 session"""
         self.close()
 
     def close(self) -> None:
@@ -279,25 +299,27 @@ class API:
             message = data.get("message", "无消息字段")
             points = str(data.get("points", 0))
 
-            # 只记录必要的字段
             if code == CheckinStatus.SUCCESS.value:
-                logger.info(
-                    f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.SUCCESS} {{ code : {code}, points : {points}, message : {message} }}"
-                )
+                if self.verbose:
+                    logger.info(
+                        f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.SUCCESS} {{ code : {code}, points : {points}, message : {message} }}"
+                    )
                 result["status"] = "签到成功"
                 result["points"] = points
                 result["message"] = message
             elif code == CheckinStatus.REPEAT.value:
-                logger.info(
-                    f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.REPEAT} {{ code : {code}, message : {message} }}"
-                )
+                if self.verbose:
+                    logger.info(
+                        f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.REPEAT} {{ code : {code}, message : {message} }}"
+                    )
                 result["status"] = "重复签到"
                 result["points"] = "0"
                 result["message"] = message
             else:
-                logger.info(
-                    f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.FAIL} {{ code : {code}, message : {message} }}"
-                )
+                if self.verbose:
+                    logger.info(
+                        f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.FAIL} {{ code : {code}, message : {message} }}"
+                    )
                 result["status"] = "签到失败"
                 result["points"] = "0"
                 result["message"] = message
@@ -320,22 +342,25 @@ class API:
             data = response.json()
             code = data.get("code", -1)
             left_days = data.get("data", {}).get("leftDays", None)
-            # 只记录必要的字段
+
             if left_days is not None:
-                logger.info(
-                    f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.SUCCESS} {{ code : {code}, leftDays : {left_days} }}"
-                )
-                return f"{int(float(left_days))} 天"
+                left_days_int = int(float(left_days))
+                if self.verbose:
+                    logger.info(
+                        f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.SUCCESS} {{ code : {code}, leftDays : {left_days_int} }}"
+                    )
+                return f"{left_days_int} 天"
             else:
-                logger.info(
-                    f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.FAIL} {{ code : {code}, leftDays : {left_days} }}"
-                )
-                return "获取失败"
+                if self.verbose:
+                    logger.info(
+                        f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.FAIL} {{ code : {code}, leftDays : {left_days} }}"
+                    )
+                return "None 天"
         else:
             logger.warning(
                 f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.WARNING} 获取状态失败"
             )
-            return "获取失败"
+            return "None 天"
 
     @log_method
     def get_points(self, cookies: str) -> Tuple[str, int]:
@@ -347,24 +372,27 @@ class API:
             data = response.json()
             code = data.get("code", -1)
             points = data.get("points", None)
-            # 只记录必要的字段
+
             if points is not None:
-                logger.info(
-                    f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.SUCCESS} {{ code : {code}, points : {points} }}"
-                )
-                points_str = f"{int(float(points))} 积分"
-                points_num = int(float(points))
+                points_int = int(float(points))
+                if self.verbose:
+                    logger.info(
+                        f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.SUCCESS} {{ code : {code}, points : {points_int} }}"
+                    )
+                points_str = f"{points_int} 积分"
+                points_num = points_int
                 return points_str, points_num
             else:
-                logger.info(
-                    f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.FAIL} {{ code : {code}, points : {points} }}"
-                )
-                return "获取失败", 0
+                if self.verbose:
+                    logger.info(
+                        f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.FAIL} {{ code : {code}, points : {points} }}"
+                    )
+                return "None 积分", 0
         else:
             logger.warning(
                 f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.WARNING} 获取积分失败"
             )
-            return "获取失败", 0
+            return "None 积分", 0
 
     @log_method
     def exchange(self, cookies: str, plan: str, required_points: int) -> str:
@@ -376,16 +404,18 @@ class API:
             data = response.json()
             code = data.get("code", -1)
             message = data.get("message", "未知错误")
-            # 只记录必要的字段
+
             if code == 0:
-                logger.info(
-                    f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.SUCCESS} {{ code : {code}, message : {message} }}"
-                )
+                if self.verbose:
+                    logger.info(
+                        f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.SUCCESS} {{ code : {code}, message : {message} }}"
+                    )
                 return f"兑换成功: {plan}"
             else:
-                logger.info(
-                    f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.FAIL} {{ code : {code}, message : {message} }}"
-                )
+                if self.verbose:
+                    logger.info(
+                        f"{LogEmoji.COOKIE}[{self.cookie_index}] {LogEmoji.DOMAIN}[{self.domain}] {LogEmoji.FAIL} {{ code : {code}, message : {message} }}"
+                    )
                 return f"兑换失败: {message}"
         else:
             logger.warning(
@@ -402,33 +432,12 @@ class CheckinResult:
     domain: str
     status: str = "签到失败"
     points: str = "0"
-    days: str = "获取失败"
-    points_total: str = "获取失败"
+    days: str = "None"
+    points_total: str = "None"
     exchange: str = "未兑换"
 
     def to_dict(self) -> Dict[str, Union[str, int]]:
-        """转换为字典"""
         return asdict(self)
-
-    @property
-    def is_success(self) -> bool:
-        """是否签到成功"""
-        return "成功" in self.status
-
-    @property
-    def is_failure(self) -> bool:
-        """是否签到失败"""
-        return "失败" in self.status
-
-    @property
-    def is_repeat(self) -> bool:
-        """是否重复签到"""
-        return "重复" in self.status
-
-    @property
-    def short_description(self) -> str:
-        """简短描述"""
-        return f"[{self.domain}] {self.status} - {self.points}积分"
 
 
 class PushService:
@@ -454,7 +463,7 @@ class PushService:
 
 
 class Checker:
-    """签到器"""
+    """签到"""
 
     def __init__(self, config: Config):
         self.config = config
@@ -479,7 +488,7 @@ class Checker:
             for domain in self.config.DOMAINS:
                 task_idx += 1
                 logger.info(
-                    f"{LogEmoji.INFO} ----- 任务 {task_idx}/{total_tasks}: Cookie {cookie_idx} on {domain} -----"
+                    f"{LogEmoji.INFO} ----- 任务 {task_idx}/{total_tasks}: {LogEmoji.COOKIE}[{cookie_idx}] on {LogEmoji.DOMAIN}[{domain}] -----"
                 )
 
                 result = self._checkin_on_domain(cookie, cookie_idx, domain)
@@ -493,11 +502,9 @@ class Checker:
     def _checkin_on_domain(
         self, cookie: str, cookie_idx: int, domain: str
     ) -> CheckinResult:
-        """在指定域名上执行签到"""
         result = CheckinResult(cookie_idx, domain)
 
-        # 使用上下文管理器管理API对象的生命周期
-        with API(domain, cookie_idx) as api:
+        with API(domain, cookie_idx, verbose=self.config.verbose) as api:
             # 1. 签到
             logger.info(
                 f"{LogEmoji.COOKIE}[{cookie_idx}] {LogEmoji.DOMAIN}[{domain}] {LogEmoji.CHECKIN} 执行签到"
