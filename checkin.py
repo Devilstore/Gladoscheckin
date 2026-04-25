@@ -24,22 +24,22 @@ logger = logging.getLogger(__name__)
 
 # ENVIRONMENT
 ENV_PUSH_KEY = "PUSHDEER_SENDKEY"
-ENV_COOKIES = "GLADOS_COOKIES"
-ENV_EXCHANGE_PLAN = "GLADOS_EXCHANGE_PLAN"
+ENV_COOKIES = "RAILGUN_COOKIES"
+ENV_EXCHANGE_PLAN = "RAILGUN_EXCHANGE_PLAN"
 
 # API URLs
-CHECKIN_URL = "https://glados.cloud/api/user/checkin"
-STATUS_URL = "https://glados.cloud/api/user/status"
-POINTS_URL = "https://glados.cloud/api/user/points"
-EXCHANGE_URL = "https://glados.cloud/api/user/exchange"
+CHECKIN_URL = "https://railgun.info/api/user/checkin"
+STATUS_URL = "https://railgun.info/api/user/status"
+POINTS_URL = "https://railgun.info/api/user/points"
+EXCHANGE_URL = "https://railgun.info/api/user/exchange"
 
 # POST DATA
-CHECKIN_DATA = {"token": "glados.cloud"} 
+CHECKIN_DATA = {"token": "railgun.info"} 
 
 # Request Headers
 HEADERS_TEMPLATE = {
-    'referer': 'https://glados.cloud/console/checkin',
-    'origin': "https://glados.cloud",
+    'referer': 'https://railgun.info/console/checkin',
+    'origin': "https://railgun.info",
     'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
     'content-type': 'application/json;charset=UTF-8'
 }
@@ -210,7 +210,7 @@ def format_push_content(results: List[Dict[str, str]]) -> Tuple[str, str]:
     fail_count = sum(1 for r in results if "失败" in r['status'] or "失败" in r['exchange'])
     repeat_count = sum(1 for r in results if "重复" in r['status'])
 
-    title = f'GLaDOS 签到, 成功{success_count}, 失败{fail_count}, 重复{repeat_count}'
+    title = f'railgun 签到, 成功{success_count}, 失败{fail_count}, 重复{repeat_count}'
 
     content_lines = []
     for i, res in enumerate(results, 1):
