@@ -28,18 +28,18 @@ ENV_COOKIES = "GLADOS_COOKIES"
 ENV_EXCHANGE_PLAN = "GLADOS_EXCHANGE_PLAN"
 
 # API URLs
-CHECKIN_URL = "https://glados.cloud/api/user/checkin"
-STATUS_URL = "https://glados.cloud/api/user/status"
-POINTS_URL = "https://glados.cloud/api/user/points"
-EXCHANGE_URL = "https://glados.cloud/api/user/exchange"
+CHECKIN_URL = "https://railgun.info/api/user/checkin"
+STATUS_URL = "https://railgun.info/api/user/status"
+POINTS_URL = "https://railgun.info/api/user/points"
+EXCHANGE_URL = "https://railgun.info/api/user/exchange"
 
 # POST DATA
-CHECKIN_DATA = {"token": "glados.cloud"} 
+CHECKIN_DATA = {"token": "railgun.info"} 
 
 # Request Headers
 HEADERS_TEMPLATE = {
-    'referer': 'https://glados.cloud/console/checkin',
-    'origin': "https://glados.cloud",
+    'referer': 'https://railgun.info/console/checkin',
+    'origin': "https://railgun.info",
     'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36",
     'content-type': 'application/json;charset=UTF-8'
 }
