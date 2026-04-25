@@ -394,7 +394,7 @@ class API:
             return "兑换失败"
 
 
-@dataclass(slots=True)
+@dataclass()
 class CheckinResult:
     """签到结果"""
 
