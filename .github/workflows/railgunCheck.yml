@@ -14,7 +14,7 @@ on:
 
 jobs:
   build:
-    name: glados checkin
+    name: railgun checkin
     runs-on: ubuntu-latest
     strategy:
       matrix:
