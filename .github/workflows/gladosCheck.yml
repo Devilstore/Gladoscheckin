@@ -42,8 +42,8 @@ jobs:
       env:
         # env获取
         PUSHDEER_SENDKEY: ${{ secrets.PUSHDEER_SENDKEY }}
-        GLADOS_COOKIES: ${{ secrets.GLADOS_COOKIES }}
-        GLADOS_EXCHANGE_PLAN: ${{ secrets.GLADOS_EXCHANGE_PLAN }}
+        RAILGUN_COOKIES: ${{ secrets.RAILGUN_COOKIES }}
+        EXCHANGE_PLAN: ${{ secrets.EXCHANGE_PLAN }}
 
     - name: keep alive
       uses: liskin/gh-workflow-keepalive@v1 # using the workflow with default settings
