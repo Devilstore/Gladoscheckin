@@ -444,12 +444,13 @@ class Checker:
                 result = self._checkin_on_domain(cookie, cookie_idx, domain)
                 self.results.append(result)
 
-                if result.code == CheckinStatus.REPEAT or result.code == CheckinStatus.FAILURE:
-                    result_message = f"结果: {result.status}"
+                result_message = f"结果: {result.status}"
+                if result.code == CheckinStatus.SUCCESS:
+                    if self.config.verbose:
+                        result_message = f"结果: {result.status}, 获得 {result.points} 积分, 剩余 {result.days}, 总 {result.points_total}, {result.exchange}"
+                    self._log(cookie_idx, domain, LogEmoji.SUCCESS, result_message, force=True)
+                else:
                     self._log(cookie_idx, domain, LogEmoji.WARNING, result_message, force=True)
-                elif result.code == CheckinStatus.SUCCESS:
-                    result_message = f"结果: {result.status}, 获得 {result.points} 积分, 剩余 {result.days}, 总 {result.points_total}, {result.exchange}"
-                    self._log(cookie_idx, domain, LogEmoji.SUCCESS, result_message)
 
     def _checkin_on_domain(self, cookie: str, cookie_idx: int, domain: str) -> CheckinResult:
         result = CheckinResult(cookie_idx, domain)
